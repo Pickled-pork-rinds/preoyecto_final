@@ -15,30 +15,19 @@
   <nav id="nav">
     <button data-vista="inicio" class="activo">Inicio</button>
     <button data-vista="agregar">Agregar</button>
-    <button data-vista="resumen">Resumen</button>
     <button data-vista="ajustes">Ajustes</button>
-    <button data-vista="analisis">Análisis</button>
   </nav>
 
   <main>
-    <!-- SPRINT 1 (lista) + SPRINT 2 (avisos) -->
+    <!-- SPRINT 1 -->
     <section id="inicio" class="vista activa">
-      <div id="alerta80" class="alerta" hidden></div>
-      <div id="aviso" class="tarjeta"></div>
       <h2>Gastos recientes</h2>
       <ul id="lista" class="lista"></ul>
     </section>
 
-    <!-- SPRINT 1 (formulario) + SPRINT 3 (voz y foto) -->
+    <!-- SPRINT 1 -->
     <section id="agregar" class="vista">
       <form id="form" autocomplete="off">
-        <div class="captura">
-          <button type="button" id="btnVoz">Dictar por voz</button>
-          <label class="btn" for="inputFoto">Foto de ticket</label>
-          <input type="file" id="inputFoto" accept="image/*" capture="environment" hidden>
-        </div>
-        <p id="estadoCaptura" class="nota" role="status"></p>
-
         <label>Monto ($)
           <input id="monto" type="number" inputmode="decimal" step="0.01" min="0.01" required>
         </label>
@@ -49,15 +38,9 @@
           <input id="nota" type="text" maxlength="80">
         </label>
         <button type="submit" class="primario">Guardar gasto</button>
+        <p id="estadoCaptura" class="nota" role="status"></p>
         <p id="tiempoRegistro" class="nota"></p>
       </form>
-    </section>
-
-    <!-- SPRINT 2 -->
-    <section id="resumen" class="vista">
-      <div id="resumenDatos" class="rejilla"></div>
-      <h2>Por categoría</h2>
-      <div id="porCategoria"></div>
     </section>
 
     <!-- SPRINT 1 -->
@@ -81,25 +64,9 @@
       </form>
       <button id="btnBorrarTodo" class="peligro" type="button">Borrar todos los gastos</button>
     </section>
-
-    <!-- SPRINT 3 -->
-    <section id="analisis" class="vista">
-      <p>Mide cuánto tardan las funciones principales con distintas cantidades de gastos generados al azar.</p>
-      <button id="btnBenchmark" class="primario" type="button">Ejecutar medición</button>
-      <table id="tablaBench" hidden>
-        <thead><tr><th>n gastos</th><th>totalPorCategoria (ms)</th><th>promedioSemanal (ms)</th></tr></thead>
-        <tbody></tbody>
-      </table>
-      <p class="nota">Cada tiempo es el promedio de 20 repeticiones. Complejidad esperada: O(n) en ambas funciones.</p>
-    </section>
   </main>
 
   <script src="js/db.js"></script>
-  <script src="js/resumen.js"></script>
-  <script src="js/avisos.js"></script>
-  <script src="js/voz.js"></script>
-  <script src="js/foto.js"></script>
-  <script src="js/analisis.js"></script>
   <script src="js/app.js"></script>
 </body>
 </html>

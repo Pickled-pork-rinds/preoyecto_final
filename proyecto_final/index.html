@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Gastos CUCEI</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <header>
+    <h1>Gastos CUCEI</h1>
+    <p class="sub">Equipo Pickled Pork Rinds</p>
+  </header>
+
+  <nav id="nav">
+    <button data-vista="inicio" class="activo">Inicio</button>
+    <button data-vista="agregar">Agregar</button>
+    <button data-vista="resumen">Resumen</button>
+    <button data-vista="ajustes">Ajustes</button>
+    <button data-vista="analisis">Análisis</button>
+  </nav>
+
+  <main>
+    <!-- SPRINT 1 (lista) + SPRINT 2 (avisos) -->
+    <section id="inicio" class="vista activa">
+      <div id="alerta80" class="alerta" hidden></div>
+      <div id="aviso" class="tarjeta"></div>
+      <h2>Gastos recientes</h2>
+      <ul id="lista" class="lista"></ul>
+    </section>
+
+    <!-- SPRINT 1 (formulario) + SPRINT 3 (voz y foto) -->
+    <section id="agregar" class="vista">
+      <form id="form" autocomplete="off">
+        <div class="captura">
+          <button type="button" id="btnVoz">Dictar por voz</button>
+          <label class="btn" for="inputFoto">Foto de ticket</label>
+          <input type="file" id="inputFoto" accept="image/*" capture="environment" hidden>
+        </div>
+        <p id="estadoCaptura" class="nota" role="status"></p>
+
+        <label>Monto ($)
+          <input id="monto" type="number" inputmode="decimal" step="0.01" min="0.01" required>
+        </label>
+        <label>Categoría
+          <select id="categoria"></select>
+        </label>
+        <label>Nota (opcional)
+          <input id="nota" type="text" maxlength="80">
+        </label>
+        <button type="submit" class="primario">Guardar gasto</button>
+        <p id="tiempoRegistro" class="nota"></p>
+      </form>
+    </section>
+
+    <!-- SPRINT 2 -->
+    <section id="resumen" class="vista">
+      <div id="resumenDatos" class="rejilla"></div>
+      <h2>Por categoría</h2>
+      <div id="porCategoria"></div>
+    </section>
+
+    <!-- SPRINT 1 -->
+    <section id="ajustes" class="vista">
+      <form id="formAjustes">
+        <label>Ingreso del periodo ($)
+          <input id="ingreso" type="number" inputmode="decimal" step="0.01" min="0" required>
+        </label>
+        <label>Cada cuánto recibes dinero
+          <select id="frecuencia">
+            <option value="semanal">Semanal</option>
+            <option value="quincenal">Quincenal</option>
+            <option value="mensual">Mensual</option>
+          </select>
+        </label>
+        <label>Fecha de tu siguiente ingreso
+          <input id="siguiente" type="date" required>
+        </label>
+        <button type="submit" class="primario">Guardar ajustes</button>
+        <p id="estadoAjustes" class="nota" role="status"></p>
+      </form>
+      <button id="btnBorrarTodo" class="peligro" type="button">Borrar todos los gastos</button>
+    </section>
+
+    <!-- SPRINT 3 -->
+    <section id="analisis" class="vista">
+      <p>Mide cuánto tardan las funciones principales con distintas cantidades de gastos generados al azar.</p>
+      <button id="btnBenchmark" class="primario" type="button">Ejecutar medición</button>
+      <table id="tablaBench" hidden>
+        <thead><tr><th>n gastos</th><th>totalPorCategoria (ms)</th><th>promedioSemanal (ms)</th></tr></thead>
+        <tbody></tbody>
+      </table>
+      <p class="nota">Cada tiempo es el promedio de 20 repeticiones. Complejidad esperada: O(n) en ambas funciones.</p>
+    </section>
+  </main>
+
+  <script src="js/db.js"></script>
+  <script src="js/resumen.js"></script>
+  <script src="js/avisos.js"></script>
+  <script src="js/voz.js"></script>
+  <script src="js/foto.js"></script>
+  <script src="js/analisis.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

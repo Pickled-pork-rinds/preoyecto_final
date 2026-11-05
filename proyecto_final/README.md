@@ -22,3 +22,4 @@ Alternativa: `npx vercel` dentro de esta carpeta y `npx vercel --prod`.
 ## Qué hace hoy
 Registrar un gasto con monto, categoría y nota; verlo en la lista; borrarlo; guardar ingreso, frecuencia y
 fecha del siguiente ingreso; y cronometrar cuánto tarda cada registro.
+   

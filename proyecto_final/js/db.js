@@ -5,7 +5,7 @@ const DB = {
   _leer(clave, defecto) {
     try { const v = JSON.parse(localStorage.getItem(clave)); return v == null ? defecto : v; }
     catch (e) { return defecto; }
-  },
+  },  
   _escribir(clave, valor) {
     try { localStorage.setItem(clave, JSON.stringify(valor)); } catch (e) { /* sin almacenamiento */ }
   },

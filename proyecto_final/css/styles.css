@@ -1,6 +1,6 @@
 :root {
   --bg: #f6f7f9; --card: #ffffff; --txt: #1d2330; --muted: #6b7385;
-  --brand: #2f6fed; --brand-txt: #ffffff; --line: #e1e4ea; --warn: #fff3cd; --warn-txt: #7a5b00;
+  --brand: #2f6fed; --brand-txt: #ffffff; --line: #e1e4ea; --warn: #fff3cd; --warn-txt: #7a5b00; 
   --danger: #c0392b;
 }    
 @media (prefers-color-scheme: dark) {

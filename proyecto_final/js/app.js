@@ -1,4 +1,4 @@
-// Conecta todo: navegación, formularios y pintado de pantallas.
+// Conecta todo: navegación, formularios y pintado de pantallas. 
 (function () {
   const $ = id => document.getElementById(id);
   const dinero = n => '$' + Number(n).toFixed(2);

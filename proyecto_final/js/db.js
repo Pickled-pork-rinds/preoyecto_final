@@ -1,4 +1,4 @@
-// SPRINT 1 - Datos. Todo se guarda en localStorage del navegador (por dispositivo).
+// SPRINT 1 - Datos. Todo se guarda en localStorage del navegador (por dispositivo). 
 const CATEGORIAS = ['Personales', 'Universidad', 'Transporte', 'Comidas', 'Médicos'];
 
 const DB = {

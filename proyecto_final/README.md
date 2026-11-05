@@ -1,4 +1,4 @@
-# Gastos CUCEI (equipo Pickled Pork Rinds)
+# Gastos CUCEI (equipo Pickled Pork Rinds) 
 
 App web para controlar gastos de estudiantes. Sin build ni dependencias: HTML + CSS + JavaScript.
 Los datos se guardan en el navegador de cada dispositivo (localStorage); no se piden datos bancarios.

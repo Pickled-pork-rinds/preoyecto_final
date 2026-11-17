@@ -1,4 +1,3 @@
-// SPRINT 3 - Medición de tiempos para el análisis de algoritmos.
 const Analisis = {
   generar(n) {
     const ahora = Date.now(), r = [];

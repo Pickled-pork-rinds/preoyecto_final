@@ -1,4 +1,3 @@
-// SPRINT 3 - Escaneo de ticket con OCR (Tesseract.js, se carga solo al usarlo).
 (function (root) {
   const CDN = 'https://cdn.jsdelivr.net/npm/tesseract.js@5.1.1/dist/tesseract.min.js';
   const IMPORTES = /\d{1,6}[.,]\d{2}/g;

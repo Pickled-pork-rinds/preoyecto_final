@@ -1,4 +1,3 @@
-
 const CATEGORIAS = ['Personales', 'Universidad', 'Transporte', 'Comidas', 'Médicos'];
 
 const DB = {

@@ -1,4 +1,3 @@
-// SPRINT 2 - Tarjeta de aviso semanal y alerta preventiva al 80 %.
 const Avisos = {
   pintarSemanal(gastos) {
     const a = Resumen.avisoSemanal(gastos);

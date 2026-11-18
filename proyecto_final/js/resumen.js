@@ -5,6 +5,9 @@
 
   const dinero = n => '$' + Number(n).toFixed(2);
 
+  // Lo que realmente pagas tú: en un gasto compartido, solo tu porcentaje del monto.
+  function parte(g) { return g.compartido ? g.monto * (g.porcentaje / 100) : g.monto; }
+
   function medianoche(ms) { const d = new Date(ms); return new Date(d.getFullYear(), d.getMonth(), d.getDate()); }
 
   // Lunes (00:00 local) de la semana que contiene a `ms`. Se usa como llave de la semana.
@@ -29,13 +32,13 @@
 
   function totalGastado(gastos, ini, fin) {
     let t = 0;
-    for (const g of gastos) if (g.fecha >= ini && g.fecha < fin) t += g.monto;
+    for (const g of gastos) if (g.fecha >= ini && g.fecha < fin) t += parte(g);
     return t;
   }
 
   function totalPorCategoria(gastos) {
     const r = {};
-    for (const g of gastos) r[g.categoria] = (r[g.categoria] || 0) + g.monto;
+    for (const g of gastos) r[g.categoria] = (r[g.categoria] || 0) + parte(g);
     return r;
   }
 
@@ -44,7 +47,7 @@
     if (!gastos.length) return 0;
     const semanas = new Set();
     let total = 0;
-    for (const g of gastos) { semanas.add(inicioSemana(g.fecha)); total += g.monto; }
+    for (const g of gastos) { semanas.add(inicioSemana(g.fecha)); total += parte(g); }
     return total / semanas.size;
   }
 
@@ -73,7 +76,7 @@
     hoy = hoy || new Date();
     const sem = inicioSemana(hoy.getTime());
     const pers = gastos.filter(g => g.categoria === 'Personales');
-    const actual = pers.filter(g => inicioSemana(g.fecha) === sem).reduce((a, g) => a + g.monto, 0);
+    const actual = pers.filter(g => inicioSemana(g.fecha) === sem).reduce((a, g) => a + parte(g), 0);
     const previos = pers.filter(g => inicioSemana(g.fecha) < sem);
     return {
       promedioGeneral: promedioSemanal(gastos),
@@ -82,7 +85,7 @@
     };
   }
 
-  const API = { dinero, inicioSemana, periodo, totalGastado, totalPorCategoria, promedioSemanal,
+  const API = { dinero, parte, inicioSemana, periodo, totalGastado, totalPorCategoria, promedioSemanal,
                 resumenPeriodo, recomendar, avisoSemanal };
   root.Resumen = API;
   if (typeof module !== 'undefined') module.exports = API;

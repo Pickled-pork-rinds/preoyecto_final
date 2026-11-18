@@ -152,22 +152,6 @@
       e.target.value = '';
     };
 
-    // Análisis
-    $('btnBenchmark').onclick = () => {
-      const cuerpo = document.querySelector('#tablaBench tbody'); cuerpo.innerHTML = '';
-      $('btnBenchmark').disabled = true;
-      setTimeout(() => {
-        Analisis.ejecutar().forEach(r => {
-          const tr = document.createElement('tr');
-          [r.n.toLocaleString('es-MX'), r.categorias.toFixed(3), r.promedio.toFixed(3)].forEach(v => {
-            const td = document.createElement('td'); td.textContent = v; tr.appendChild(td);
-          });
-          cuerpo.appendChild(tr);
-        });
-        $('tablaBench').hidden = false; $('btnBenchmark').disabled = false;
-      }, 30);
-    };
-
     pintarTodo();
   }
 

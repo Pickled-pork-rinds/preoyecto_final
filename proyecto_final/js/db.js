@@ -1,3 +1,4 @@
+// SPRINT 1 - Datos. Todo se guarda en localStorage del navegador (por dispositivo).
 const CATEGORIAS = ['Personales', 'Universidad', 'Transporte', 'Comidas', 'Médicos'];
 
 const DB = {
@@ -10,9 +11,11 @@ const DB = {
   },
 
   gastos() { return this._leer('gastos', []); },
-  agregar({ monto, categoria, nota }) {
+  agregar({ monto, categoria, nota, compartido, persona, porcentaje }) {
     const lista = this.gastos();
-    const gasto = { id: Date.now() + Math.random(), monto: Number(monto), categoria, nota: nota || '', fecha: Date.now() };
+    const comp = !!compartido;
+    const gasto = { id: Date.now() + Math.random(), monto: Number(monto), categoria, nota: nota || '', fecha: Date.now(),
+                    compartido: comp, persona: comp ? (persona || '') : '', porcentaje: comp ? Number(porcentaje) : 100 };
     lista.push(gasto);
     this._escribir('gastos', lista);
     return gasto;

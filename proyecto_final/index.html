@@ -17,11 +17,10 @@
     <button data-vista="agregar">Agregar</button>
     <button data-vista="resumen">Resumen</button>
     <button data-vista="ajustes">Ajustes</button>
-    <button data-vista="analisis">Análisis</button>
   </nav>
 
   <main>
-  
+    
     <section id="inicio" class="vista activa">
       <div id="alerta80" class="alerta" hidden></div>
       <div id="aviso" class="tarjeta"></div>
@@ -29,7 +28,7 @@
       <ul id="lista" class="lista"></ul>
     </section>
 
-   
+    
     <section id="agregar" class="vista">
       <form id="form" autocomplete="off">
         <div class="captura">
@@ -65,14 +64,14 @@
       </form>
     </section>
 
-
+    
     <section id="resumen" class="vista">
       <div id="resumenDatos" class="rejilla"></div>
       <h2>Por categoría</h2>
       <div id="porCategoria"></div>
     </section>
 
-
+    
     <section id="ajustes" class="vista">
       <form id="formAjustes">
         <label>Ingreso del periodo ($)
@@ -94,16 +93,6 @@
       <button id="btnBorrarTodo" class="peligro" type="button">Borrar todos los gastos</button>
     </section>
 
- 
-    <section id="analisis" class="vista">
-      <p>Mide cuánto tardan las funciones principales con distintas cantidades de gastos generados al azar.</p>
-      <button id="btnBenchmark" class="primario" type="button">Ejecutar medición</button>
-      <table id="tablaBench" hidden>
-        <thead><tr><th>n gastos</th><th>totalPorCategoria (ms)</th><th>promedioSemanal (ms)</th></tr></thead>
-        <tbody></tbody>
-      </table>
-      <p class="nota">Cada tiempo es el promedio de 20 repeticiones. Complejidad esperada: O(n) en ambas funciones.</p>
-    </section>
   </main>
 
   <script src="js/db.js"></script>
@@ -111,7 +100,6 @@
   <script src="js/avisos.js"></script>
   <script src="js/voz.js"></script>
   <script src="js/foto.js"></script>
-  <script src="js/analisis.js"></script>
   <script src="js/app.js"></script>
 </body>
 </html>

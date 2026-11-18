@@ -1,7 +1,7 @@
-// Conecta todo: navegación, formularios y pintado de pantallas. 
+// Conecta todo: navegación, formularios y pintado de pantallas.
 (function () {
   const $ = id => document.getElementById(id);
-  const dinero = n => '$' + Number(n).toFixed(2);
+  const dinero = n => Resumen.dinero(n);
   let inicioForm = null; // para cronometrar el registro
 
   function mostrarVista(nombre) {
@@ -21,9 +21,11 @@
       info.textContent = g.categoria;
       const small = document.createElement('small');
       small.textContent = new Date(g.fecha).toLocaleDateString('es-MX', { day: 'numeric', month: 'short' }) +
-                          (g.nota ? ' · ' + g.nota : '');
+                          (g.nota ? ' · ' + g.nota : '') +
+                          (g.compartido ? ' · Compartido con ' + g.persona + ': tu parte ' + g.porcentaje + ' % (' +
+                                          dinero(Resumen.parte(g)) + ')' : '');
       info.appendChild(small);
-      const monto = document.createElement('span'); monto.className = 'monto'; monto.textContent = dinero(g.monto);
+      const monto = document.createElement('span'); monto.className = 'monto'; monto.textContent = Resumen.dinero(g.monto);
       const x = document.createElement('button'); x.textContent = '×'; x.setAttribute('aria-label', 'Borrar gasto');
       x.onclick = () => { DB.borrar(g.id); pintarTodo(); };
       li.append(info, monto, x);
@@ -31,17 +33,74 @@
     });
   }
 
+  function pintarResumen(gastos, cfg) {
+    const r = Resumen.resumenPeriodo(gastos, cfg);
+    const caja = $('resumenDatos');
+    if (!r) { caja.innerHTML = '<p class="nota">Configura tu ingreso en Ajustes para ver cuánto te queda.</p>'; }
+    else {
+      const datos = [['Gastado', Resumen.dinero(r.gastado)], ['Te queda', Resumen.dinero(r.restante)],
+                     ['Días al siguiente ingreso', String(r.dias)], ['Sugerido por día', Resumen.dinero(r.diarioSugerido)]];
+      caja.innerHTML = '';
+      datos.forEach(([et, val]) => {
+        const d = document.createElement('div'); d.className = 'dato';
+        const s = document.createElement('span'); s.textContent = et;
+        const b = document.createElement('b'); b.textContent = val;
+        d.append(s, b); caja.appendChild(d);
+      });
+    }
+    const cat = Resumen.totalPorCategoria(gastos);
+    const max = Math.max(1, ...Object.values(cat));
+    const pc = $('porCategoria'); pc.innerHTML = '';
+    CATEGORIAS.forEach(c => {
+      const v = cat[c] || 0;
+      const div = document.createElement('div'); div.className = 'barra';
+      const fila = document.createElement('div'); fila.className = 'fila';
+      const a = document.createElement('span'); a.textContent = c;
+      const b = document.createElement('span'); b.textContent = Resumen.dinero(v);
+      fila.append(a, b);
+      const fondo = document.createElement('div'); fondo.className = 'fondo';
+      const rel = document.createElement('div'); rel.className = 'relleno'; rel.style.width = (v / max * 100) + '%';
+      fondo.appendChild(rel); div.append(fila, fondo); pc.appendChild(div);
+    });
+    Avisos.preventivo(r);
+  }
+
   function pintarTodo() {
-    pintarLista(DB.gastos());
+    const gastos = DB.gastos(), cfg = DB.config();
+    pintarLista(gastos);
+    Avisos.pintarSemanal(gastos);
+    pintarResumen(gastos, cfg);
     const t = DB.tiempos();
     $('tiempoRegistro').textContent = t.length
       ? 'Tiempo promedio por registro: ' + (t.reduce((a, b) => a + b, 0) / t.length).toFixed(1) + ' s (' + t.length + ' registros)'
       : '';
   }
 
+  function prellenar({ monto, categoria, nota }) {
+    if (monto != null) $('monto').value = monto;
+    if (categoria) $('categoria').value = categoria;
+    if (nota) $('nota').value = nota;
+  }
+
+  // Gasto compartido: muestra persona y porcentaje solo si se marca, y calcula tu parte al escribir
+  function actualizarCompartido() {
+    const on = $('compartido').checked;
+    $('bloqueCompartido').hidden = !on;
+    $('persona').disabled = !on;
+    $('porcentaje').disabled = !on;
+    const m = parseFloat($('monto').value), p = parseFloat($('porcentaje').value);
+    $('partePreview').textContent = on && m > 0 && p >= 1 && p <= 99
+      ? 'Tu parte: ' + dinero(m * p / 100) + ' · ' + ($('persona').value.trim() || 'la otra persona') + ': ' + dinero(m - m * p / 100)
+      : '';
+  }
+
   function iniciar() {
     CATEGORIAS.forEach(c => { const o = document.createElement('option'); o.textContent = c; $('categoria').appendChild(o); });
     document.querySelectorAll('#nav button').forEach(b => b.onclick = () => mostrarVista(b.dataset.vista));
+
+    ['compartido', 'persona', 'porcentaje', 'monto'].forEach(id => {
+      $(id).addEventListener(id === 'compartido' ? 'change' : 'input', actualizarCompartido);
+    });
 
     // Cronómetro: arranca al primer toque dentro del formulario
     $('form').addEventListener('focusin', () => { if (!inicioForm) inicioForm = Date.now(); });
@@ -50,10 +109,17 @@
       e.preventDefault();
       const monto = parseFloat($('monto').value);
       if (!(monto > 0)) { $('estadoCaptura').textContent = 'El monto debe ser mayor a 0.'; return; }
-      DB.agregar({ monto, categoria: $('categoria').value, nota: $('nota').value.trim() });
+      const compartido = $('compartido').checked;
+      const persona = $('persona').value.trim();
+      const porcentaje = parseFloat($('porcentaje').value);
+      if (compartido && !persona) { $('estadoCaptura').textContent = 'Escribe con quién compartes el gasto.'; return; }
+      if (compartido && !(porcentaje >= 1 && porcentaje <= 99)) { $('estadoCaptura').textContent = 'Tu porcentaje debe estar entre 1 y 99.'; return; }
+      DB.agregar({ monto, categoria: $('categoria').value, nota: $('nota').value.trim(), compartido, persona, porcentaje });
       if (inicioForm) DB.guardarTiempo((Date.now() - inicioForm) / 1000);
       inicioForm = null;
-      $('form').reset(); $('estadoCaptura').textContent = 'Gasto guardado.';
+      $('form').reset(); actualizarCompartido();
+      $('estadoCaptura').textContent = 'Gasto guardado.';
+      Avisos.pedirPermiso();
       pintarTodo();
     };
 
@@ -61,11 +127,46 @@
       e.preventDefault();
       DB.guardarConfig({ ingreso: parseFloat($('ingreso').value) || 0, frecuencia: $('frecuencia').value, siguiente: $('siguiente').value });
       $('estadoAjustes').textContent = 'Ajustes guardados.';
+      pintarTodo();
     };
     const cfg = DB.config();
     $('ingreso').value = cfg.ingreso || ''; $('frecuencia').value = cfg.frecuencia; $('siguiente').value = cfg.siguiente;
 
     $('btnBorrarTodo').onclick = () => { if (confirm('¿Borrar todos los gastos?')) { DB.borrarTodo(); pintarTodo(); } };
+
+    // Voz
+    $('btnVoz').onclick = () => Voz.iniciar(
+      texto => { prellenar(Voz.parsear(texto)); $('estadoCaptura').textContent = 'Entendí: "' + texto + '". Revisa y guarda.'; },
+      (msg, activo) => { if (msg) $('estadoCaptura').textContent = msg; $('btnVoz').classList.toggle('escuchando', !!activo); }
+    );
+
+    // Foto
+    $('inputFoto').onchange = async e => {
+      const f = e.target.files[0]; if (!f) return;
+      $('estadoCaptura').textContent = 'Leyendo ticket… puede tardar unos segundos.';
+      try {
+        const r = await Foto.leerTicket(f);
+        if (r.monto == null) $('estadoCaptura').textContent = 'No pude leer el total. Captura el monto a mano.';
+        else { prellenar({ monto: r.monto, categoria: 'Personales' }); $('estadoCaptura').textContent = 'Total detectado: ' + Resumen.dinero(r.monto) + '. Revisa y guarda.'; }
+      } catch (err) { $('estadoCaptura').textContent = err.message; }
+      e.target.value = '';
+    };
+
+    // Análisis
+    $('btnBenchmark').onclick = () => {
+      const cuerpo = document.querySelector('#tablaBench tbody'); cuerpo.innerHTML = '';
+      $('btnBenchmark').disabled = true;
+      setTimeout(() => {
+        Analisis.ejecutar().forEach(r => {
+          const tr = document.createElement('tr');
+          [r.n.toLocaleString('es-MX'), r.categorias.toFixed(3), r.promedio.toFixed(3)].forEach(v => {
+            const td = document.createElement('td'); td.textContent = v; tr.appendChild(td);
+          });
+          cuerpo.appendChild(tr);
+        });
+        $('tablaBench').hidden = false; $('btnBenchmark').disabled = false;
+      }, 30);
+    };
 
     pintarTodo();
   }

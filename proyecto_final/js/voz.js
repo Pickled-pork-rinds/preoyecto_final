@@ -37,3 +37,4 @@
   root.Voz = API;
   if (typeof module !== 'undefined') module.exports = API;
 })(typeof window !== 'undefined' ? window : globalThis);
+ 

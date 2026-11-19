@@ -30,3 +30,4 @@ const DB = {
   tiempos() { return this._leer('tiempos', []); },
   guardarTiempo(seg) { this._escribir('tiempos', this.tiempos().concat(seg).slice(-50)); }
 };
+  

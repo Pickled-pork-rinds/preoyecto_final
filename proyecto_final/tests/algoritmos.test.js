@@ -44,3 +44,4 @@ assert.strictEqual(F.extraerTotal('Café 30,00\nPan 12,50'), 30);
 assert.strictEqual(F.extraerTotal('nada'), null);
 
 console.log('Todas las pruebas pasaron');
+

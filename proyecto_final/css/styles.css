@@ -50,3 +50,4 @@ button, .btn { font: inherit; cursor: pointer; }
 [hidden] { display: none !important; }
 form label.check { display: flex; align-items: center; gap: 8px; color: var(--txt); }
 form label.check input { width: auto; margin: 0; }
+ 
